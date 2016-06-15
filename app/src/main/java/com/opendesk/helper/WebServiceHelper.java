@@ -28,7 +28,7 @@ public class WebServiceHelper {
 	private JSONObject jsonResponseObject;
 	private StringBuilder sb;
 	private OutputStream outputStream;
-	private StringBuilder cookies = null;
+	private StringBuilder cookie = null;
 	private boolean isSessionEnabled = false;
 
 	private WebServiceHelper() {
@@ -47,8 +47,8 @@ public class WebServiceHelper {
 			httpURLConnection.setConnectTimeout(TIMEOUT);
 			httpURLConnection.setRequestProperty(CONTENT_TYPE_KEY, CONTENT_TYPE_VALUE);
 
-			if (cookies != null) {
-				httpURLConnection.setRequestProperty(COOKIE_KEY, cookies.toString());
+			if (cookie != null) {
+				httpURLConnection.setRequestProperty(COOKIE_KEY, cookie.toString());
 			}
 
 			httpURLConnection.setDoInput(true);
@@ -98,7 +98,7 @@ public class WebServiceHelper {
 				Log.d("Response Data", sb.toString());
 
 				if (isSessionEnabled) {
-					enableSession();
+					getCookie();
 				}
 
 				jsonResponseObject = new JSONObject(sb.toString());
@@ -124,19 +124,19 @@ public class WebServiceHelper {
 		webServiceHelper.isSessionEnabled = enableSession;
 	}
 
-	private StringBuilder enableSession() {
+	private StringBuilder getCookie() {
 		Map<String, List<String>> headerList = httpURLConnection.getHeaderFields();
 		if (headerList != null && headerList.containsKey(SET_COOKIE_KEY)) {
 			List<String> headers = headerList.get(SET_COOKIE_KEY);
 			if (headers != null && !headers.isEmpty()) {
-				cookies = new StringBuilder();
+				cookie = new StringBuilder();
 				for (String value : headers) {
-					cookies.append(value);
+					cookie.append(value);
 				}
 			}
 
 		}
-		return cookies;
+		return cookie;
 	}
 
 }
