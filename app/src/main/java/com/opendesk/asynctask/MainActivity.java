@@ -1,15 +1,14 @@
 package com.opendesk.asynctask;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.app.Activity;
+import android.os.Bundle;
 
-import com.opendesk.helper.CommonAsyncTask;
 import com.opendesk.helper.MakeAPICall;
 import com.opendesk.helper.OnCommonAsyncTaskListener;
 import com.opendesk.helper.RequestType;
 
-import android.app.Activity;
-import android.os.Bundle;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends Activity {
 
@@ -28,23 +27,6 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		/*new CommonAsyncTask(url, jsonObject, RequestType.POST, new OnCommonAsyncTaskListener() {
-			
-			@Override
-			public void onTaskCompleted(JSONObject jsonObject) {
-				new CommonAsyncTask("https://expensetracker-opendesk.rhcloud.com/expensecategories/index.json", null, RequestType.GET,
-						new OnCommonAsyncTaskListener() {
-							
-							@Override
-							public void onTaskCompleted(JSONObject jsonObject) {
-								// TODO Auto-generated method stub
-								
-							}
-						}).execute();
-				
-			}
-		}).execute();*/
 
 		new MakeAPICall.Builder()
 				.setEndPoint("https://expensetracker-opendesk.rhcloud.com/users/login.json")
@@ -53,7 +35,15 @@ public class MainActivity extends Activity {
 				.getResponse(new OnCommonAsyncTaskListener() {
 					@Override
 					public void onTaskCompleted(JSONObject jsonObject) {
+							new MakeAPICall.Builder()
+									.setEndPoint("https://expensetracker-opendesk.rhcloud.com/expensecategories/index.json")
+									.setRequestType(RequestType.GET)
+									.getResponse(new OnCommonAsyncTaskListener() {
+										@Override
+										public void onTaskCompleted(JSONObject jsonObject) {
 
+										}
+									}).build();
 					}
 				}).build();
 	}
