@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.opendesk.helper.CommonAsyncTask;
+import com.opendesk.helper.MakeAPICall;
 import com.opendesk.helper.OnCommonAsyncTaskListener;
 import com.opendesk.helper.RequestType;
 
@@ -28,7 +29,7 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}
 		
-		new CommonAsyncTask(url, jsonObject, RequestType.POST, new OnCommonAsyncTaskListener() {
+		/*new CommonAsyncTask(url, jsonObject, RequestType.POST, new OnCommonAsyncTaskListener() {
 			
 			@Override
 			public void onTaskCompleted(JSONObject jsonObject) {
@@ -43,8 +44,18 @@ public class MainActivity extends Activity {
 						}).execute();
 				
 			}
-		}).execute();
+		}).execute();*/
+
+		new MakeAPICall.Builder()
+				.setEndPoint("https://expensetracker-opendesk.rhcloud.com/users/login.json")
+				.setRequestType(RequestType.POST)
+				.setPostData(jsonObject)
+				.getResponse(new OnCommonAsyncTaskListener() {
+					@Override
+					public void onTaskCompleted(JSONObject jsonObject) {
+
+					}
+				}).build();
 	}
-	
 	
 }
