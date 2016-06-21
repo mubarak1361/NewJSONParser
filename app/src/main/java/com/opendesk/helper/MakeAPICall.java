@@ -3,25 +3,26 @@ package com.opendesk.helper;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
-import android.os.Build;
 
 public class MakeAPICall extends AsyncTask<Void, Void, JSONObject>{
 
 	private String url;
 	private JSONObject jsonObject;
 	private RequestType requestType;
-	private OnCommonAsyncTaskListener onCommonAsyncTask;
+	private OnResponseListener onCommonAsyncTask;
+	private int id;
 
 	private MakeAPICall(){
 		super();
 	}
 
-	private MakeAPICall(String url,JSONObject jsonObject,RequestType requestType,OnCommonAsyncTaskListener onCommonAsyncTask) {
+	private MakeAPICall(String url,JSONObject jsonObject,RequestType requestType,OnResponseListener onCommonAsyncTask,int id) {
 		super();
 		this.url = url;
 		this.jsonObject = jsonObject;
 		this.requestType = requestType;
 		this.onCommonAsyncTask = onCommonAsyncTask;
+		this.id = id;
 	}
 	
 	@Override
@@ -39,7 +40,7 @@ public class MakeAPICall extends AsyncTask<Void, Void, JSONObject>{
 	@Override
 	protected void onPostExecute(JSONObject result) {
 		super.onPostExecute(result);
-		onCommonAsyncTask.onTaskCompleted(result);
+		onCommonAsyncTask.onSuccess(id,result);
 	}
 
 	public static class Builder implements APIBuilder<Builder> {
@@ -47,7 +48,8 @@ public class MakeAPICall extends AsyncTask<Void, Void, JSONObject>{
 		private RequestType requestType;
 		private String url;
 		private JSONObject jsonPostObject;
-		private OnCommonAsyncTaskListener onCommonAsyncTask;
+		private OnResponseListener onCommonAsyncTask;
+		private int id;
 
 		public Builder(){
 			resetData();
@@ -72,14 +74,20 @@ public class MakeAPICall extends AsyncTask<Void, Void, JSONObject>{
 		}
 
 		@Override
-		public Builder getResponse(OnCommonAsyncTaskListener onCommonAsyncTask) {
+		public Builder getResponse(OnResponseListener onCommonAsyncTask) {
 			this.onCommonAsyncTask = onCommonAsyncTask;
 			return this;
 		}
 
 		@Override
+		public Builder setId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		@Override
 		public void build() {
-			new MakeAPICall(url, jsonPostObject, requestType, onCommonAsyncTask).execute();
+			new MakeAPICall(url, jsonPostObject, requestType, onCommonAsyncTask,id).execute();
 		}
 
 		private void resetData() {

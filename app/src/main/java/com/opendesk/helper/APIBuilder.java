@@ -9,6 +9,7 @@ public interface APIBuilder<T> {
     public T setRequestType(RequestType requestType);
     public T setEndPoint(String url);
     public T setPostData(JSONObject jsonObject);
-    public T getResponse(OnCommonAsyncTaskListener onCommonAsyncTask);
+    public T getResponse(OnResponseListener onCommonAsyncTask);
+    public T setId(int id);
     public void build();
 }
