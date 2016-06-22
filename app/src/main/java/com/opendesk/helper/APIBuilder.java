@@ -7,5 +7,6 @@ import org.json.JSONObject;
  */
 public interface APIBuilder<T,C> {
     public T setEndPoint(String url);
+    public T setEnableSession(boolean isSessionEnabled);
     public C build();
 }

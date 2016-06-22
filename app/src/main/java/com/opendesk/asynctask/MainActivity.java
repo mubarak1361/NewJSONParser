@@ -12,14 +12,15 @@ import org.json.JSONObject;
 
 public class MainActivity extends Activity implements  OnResponseListener{
 
-	private final String USER_LOGIN ="https://expensetracker-opendesk.rhcloud.com/users/login.json";
-	private final String USER_CATEGORY ="https://expensetracker-opendesk.rhcloud.com/expensecategories/index.json";
+	private final String BASE_URL ="https://expensetracker-opendesk.rhcloud.com/";
+	private final String LOGIN_PATH = "users/login.json";
+	private final String USER_CATEGORY_PATH = "expensecategories/index.json";
 
 	private final int LOGIN =1;
 	private final int CATEGORY = 2;
 
-	private MakeAPICall.Builder categoryBuilder;
-	
+	private MakeAPICall.Create creater;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,25 +35,31 @@ public class MainActivity extends Activity implements  OnResponseListener{
 			e.printStackTrace();
 		}
 
-		new MakeAPICall.Builder()
-				.setEndPoint(USER_LOGIN)
-				.setRequestType(RequestType.POST)
-				.setId(LOGIN)
-				.setPostData(jsonObject)
-				.getResponse(this).build();
+		creater = new MakeAPICall.Builder()
+				.setEndPoint(BASE_URL)
+				.setEnableSession(true)
+				.build();
 
-		categoryBuilder = new MakeAPICall.Builder()
-				.setEndPoint(USER_CATEGORY)
-				.setId(CATEGORY)
+		creater.setURLPath(LOGIN_PATH)
+				.setRequestType(RequestType.POST)
+				.setPostData(jsonObject)
+				.setTag(LOGIN)
+				.getResponse(this)
+				.run();
+
+		creater.setURLPath(USER_CATEGORY_PATH)
 				.setRequestType(RequestType.GET)
-				.getResponse(this);
+				.getResponse(this)
+				.setTag(CATEGORY);
+
+
 	}
 
 	@Override
 	public void onSuccess(int id, JSONObject jsonObject) {
 		switch (id){
 			case LOGIN:
-				categoryBuilder.build();
+				creater.run();
 				break;
 			case CATEGORY:
 				break;
