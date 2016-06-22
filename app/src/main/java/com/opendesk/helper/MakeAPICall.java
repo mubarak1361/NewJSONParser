@@ -43,22 +43,66 @@ public class MakeAPICall extends AsyncTask<Void, Void, JSONObject>{
 		onCommonAsyncTask.onSuccess(id,result);
 	}
 
-	public static class Builder implements APIBuilder<Builder> {
+	public static class Create implements APIExecuter<Create>{
 
+		private String endPoint;
 		private RequestType requestType;
-		private String url;
+		private String urlPath;
 		private JSONObject jsonPostObject;
 		private OnResponseListener onCommonAsyncTask;
-		private int id;
+		private int tag;
 
-		public Builder(){
-			resetData();
+
+		private Create(){
+
+		}
+
+		private Create(String endPoint){
+			this.endPoint = endPoint;
 		}
 
 		@Override
-		public Builder setRequestType(RequestType requestType) {
+		public Create setRequestType(RequestType requestType) {
 			this.requestType = requestType;
 			return this;
+		}
+
+		@Override
+		public Create setURLPath(String urlPath) {
+			this.urlPath = endPoint+urlPath;
+			return this;
+		}
+
+		@Override
+		public Create setPostData(JSONObject jsonPostObject) {
+			this.jsonPostObject = jsonPostObject;
+			return this;
+		}
+
+		@Override
+		public Create getResponse(OnResponseListener onCommonAsyncTask) {
+			this.onCommonAsyncTask = onCommonAsyncTask;
+			return this;
+		}
+
+		@Override
+		public Create setTag(int tag) {
+			this.tag = tag;
+			return this;
+		}
+
+		@Override
+		public void run() {
+			new MakeAPICall(urlPath, jsonPostObject, requestType, onCommonAsyncTask,tag).execute();
+		}
+
+	}
+
+	public static class Builder implements APIBuilder<Builder,Create> {
+
+		private String url;
+
+		public Builder(){
 		}
 
 		@Override
@@ -68,35 +112,9 @@ public class MakeAPICall extends AsyncTask<Void, Void, JSONObject>{
 		}
 
 		@Override
-		public Builder setPostData(JSONObject jsonPostObject) {
-			this.jsonPostObject = jsonPostObject;
-			return this;
+		public Create build() {
+			return new Create(url);
 		}
-
-		@Override
-		public Builder getResponse(OnResponseListener onCommonAsyncTask) {
-			this.onCommonAsyncTask = onCommonAsyncTask;
-			return this;
-		}
-
-		@Override
-		public Builder setId(int id) {
-			this.id = id;
-			return this;
-		}
-
-		@Override
-		public void build() {
-			new MakeAPICall(url, jsonPostObject, requestType, onCommonAsyncTask,id).execute();
-		}
-
-		private void resetData() {
-			requestType = null;
-			url = null;
-			jsonPostObject = null;
-			onCommonAsyncTask = null;
-		}
-
 	}
 
 
